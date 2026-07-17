@@ -1,0 +1,7 @@
+<div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+  <%= link_to "All Products", root_path, class: "btn #{params[:category_id].blank? ? 'btn-primary' : 'btn-outline-primary'}" %>
+  <% @categories.each do |category| %>
+    <%= link_to category.name, root_path(category_id: category.id),
+        class: "btn #{params[:category_id].to_s == category.id.to_s ? 'btn-primary' : 'btn-outline-primary'}" %>
+  <% end %>
+</div>
