@@ -1,0 +1,23 @@
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <%= form_with url: root_path, method: :get, local: true do |f| %>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <%= f.text_field :search,
+              value: params[:search],
+              placeholder: "Search cakes and cupcakes...",
+              class: "form-control" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.select :category_id,
+              options_from_collection_for_select(@categories, :id, :name, params[:category_id]),
+              { include_blank: "All Categories" },
+              { class: "form-select" } %>
+        </div>
+        <div class="col-md-2">
+          <%= f.submit "Search", class: "btn btn-primary w-100" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

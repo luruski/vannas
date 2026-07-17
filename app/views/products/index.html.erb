@@ -4,11 +4,19 @@
     <p class="lead text-muted">Custom cakes and cupcakes baked fresh in Winnipeg, MB</p>
   </div>
 
+  <%= render "search_form" %>
   <%= render "category_nav" %>
 
-  <div class="row row-cols-1 row-cols-md-3 g-4">
-    <% @products.each do |product| %>
-      <%= render "product_card", product: product %>
-    <% end %>
-  </div>
+  <% if @products.empty? %>
+    <div class="text-center py-5">
+      <h4 class="text-muted">No products found matching your search.</h4>
+      <%= link_to "Clear Search", root_path, class: "btn btn-outline-primary mt-3" %>
+    </div>
+  <% else %>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <% @products.each do |product| %>
+        <%= render "product_card", product: product %>
+      <% end %>
+    </div>
+  <% end %>
 </div>
