@@ -4,7 +4,9 @@
       <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><%= link_to "Home", root_path %></li>
-          <li class="breadcrumb-item"><%= link_to @product.category.name, root_path %></li>
+          <li class="breadcrumb-item">
+            <%= link_to @product.category.name, root_path(category_id: @product.category.id) %>
+          </li>
           <li class="breadcrumb-item active"><%= @product.name %></li>
         </ol>
       </nav>
