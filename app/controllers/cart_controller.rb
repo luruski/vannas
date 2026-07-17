@@ -25,15 +25,12 @@ class CartController < ApplicationController
   def update
     product_id = params[:product_id].to_s
     quantity = params[:quantity].to_i
-
     session[:cart] ||= {}
-
     if quantity <= 0
       session[:cart].delete(product_id)
     else
       session[:cart][product_id] = quantity
     end
-
     redirect_to cart_path, notice: "Cart updated!"
   end
 
