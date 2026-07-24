@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  status: MyString
+  pickup_date: 2026-07-24
+  notes: MyText
+  gst_amount: 9.99
+  pst_amount: 9.99
+  hst_amount: 9.99
+
+two:
+  user_id: 1
+  status: MyString
+  pickup_date: 2026-07-24
+  notes: MyText
+  gst_amount: 9.99
+  pst_amount: 9.99
+  hst_amount: 9.99
