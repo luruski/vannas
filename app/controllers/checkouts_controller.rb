@@ -1,4 +1,4 @@
-class CheckoutController < ApplicationController
+class CheckoutsController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_cart_not_empty
 
