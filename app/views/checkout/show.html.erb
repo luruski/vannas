@@ -1,0 +1,104 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="mb-4">Checkout</h1>
+
+      <%= form_with url: checkout_path, method: :post, local: true do |f| %>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Order Summary</h5>
+          </div>
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @cart_products.each do |item| %>
+                  <tr>
+                    <td><%= item[:product].name %></td>
+                    <td><%= number_to_currency(item[:product].price) %></td>
+                    <td><%= item[:quantity] %></td>
+                    <td><%= number_to_currency(item[:subtotal]) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+              <tfoot class="table-light">
+                <tr>
+                  <td colspan="3" class="text-end">Subtotal:</td>
+                  <td><%= number_to_currency(@total) %></td>
+                </tr>
+                <% if @gst_amount > 0 %>
+                  <tr>
+                    <td colspan="3" class="text-end">GST:</td>
+                    <td><%= number_to_currency(@gst_amount) %></td>
+                  </tr>
+                <% end %>
+                <% if @pst_amount > 0 %>
+                  <tr>
+                    <td colspan="3" class="text-end">PST:</td>
+                    <td><%= number_to_currency(@pst_amount) %></td>
+                  </tr>
+                <% end %>
+                <% if @hst_amount > 0 %>
+                  <tr>
+                    <td colspan="3" class="text-end">HST:</td>
+                    <td><%= number_to_currency(@hst_amount) %></td>
+                  </tr>
+                <% end %>
+                <tr class="fw-bold">
+                  <td colspan="3" class="text-end fs-5">Grand Total:</td>
+                  <td class="fs-5"><%= number_to_currency(@grand_total) %></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Order Details</h5>
+          </div>
+          <div class="card-body">
+            <% if current_user.province.nil? %>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Your Province</label>
+                <p class="text-muted small">We need your province to calculate taxes correctly.</p>
+                <%= f.select :province_id,
+                    options_from_collection_for_select(Province.all, :id, :name),
+                    { include_blank: "Select your province" },
+                    { class: "form-select" } %>
+              </div>
+            <% else %>
+              <p class="mb-3">
+                <strong>Province:</strong> <%= current_user.province.name %>
+                <%= link_to "(change)", edit_user_registration_path, class: "small" %>
+              </p>
+            <% end %>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Requested Pickup Date</label>
+              <%= f.date_field :pickup_date, class: "form-control", min: Date.today %>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Special Instructions (optional)</label>
+              <%= f.text_area :notes, class: "form-control", rows: 3,
+                  placeholder: "Any allergies, custom decorations, or special requests..." %>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <%= link_to "Back to Cart", cart_path, class: "btn btn-outline-secondary" %>
+          <%= f.submit "Place Order", class: "btn btn-primary btn-lg" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
