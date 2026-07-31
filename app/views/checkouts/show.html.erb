@@ -65,7 +65,7 @@
             <h5 class="mb-0">Order Details</h5>
           </div>
           <div class="card-body">
-            <% if current_user.province.nil? %>
+            <% if @logged_in_user&.province_id.blank? %>
               <div class="mb-3">
                 <label class="form-label fw-bold">Your Province</label>
                 <p class="text-muted small">We need your province to calculate taxes correctly.</p>
@@ -76,8 +76,7 @@
               </div>
             <% else %>
               <p class="mb-3">
-                <strong>Province:</strong> <%= current_user.province.name %>
-                <%= link_to "(change)", edit_user_registration_path, class: "small" %>
+                <strong>Province:</strong> <%= @province ? @province.name : "Not set" %>
               </p>
             <% end %>
 

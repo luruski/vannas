@@ -30,7 +30,7 @@
                 <% end %>
               <% end %>
             </li>
-            <% if user_signed_in? %>
+            <% if current_customer.present? %>
               <li class="nav-item">
                 <%= link_to "Orders", orders_path, class: "nav-link" %>
               </li>

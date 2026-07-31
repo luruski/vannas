@@ -1,12 +1,13 @@
 class CheckoutsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :require_login
   before_action :ensure_cart_not_empty
 
   def show
     @cart = session[:cart] || {}
     @cart_products = build_cart_products(@cart)
     @total = @cart_products.sum { |item| item[:subtotal] }
-    @province = current_user.province
+    @logged_in_user = current_customer
+    @province = @logged_in_user&.province_id ? Province.find_by(id: @logged_in_user.province_id) : nil
     calculate_taxes(@total, @province)
   end
 
@@ -14,12 +15,17 @@ class CheckoutsController < ApplicationController
     @cart = session[:cart] || {}
     @cart_products = build_cart_products(@cart)
     @total = @cart_products.sum { |item| item[:subtotal] }
-    @province = current_user.province
+    @logged_in_user = current_customer
 
+    if params[:province_id].present?
+      @logged_in_user.update(province_id: params[:province_id])
+    end
+
+    @province = @logged_in_user&.province_id ? Province.find_by(id: @logged_in_user.province_id) : nil
     calculate_taxes(@total, @province)
 
     order = Order.new(
-      user: current_user,
+      user: @logged_in_user,
       status: "pending",
       pickup_date: params[:pickup_date],
       notes: params[:notes],
@@ -44,6 +50,12 @@ class CheckoutsController < ApplicationController
   end
 
   private
+
+  def require_login
+    unless current_customer
+      redirect_to new_user_session_path, alert: "Please sign in to checkout."
+    end
+  end
 
   def ensure_cart_not_empty
     if session[:cart].blank?
