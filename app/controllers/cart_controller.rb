@@ -6,11 +6,11 @@ class CartController < ApplicationController
 
     @cart.each do |product_id, quantity|
       product = Product.find_by(id: product_id)
-      if product
-        subtotal = product.price * quantity
-        @total += subtotal
-        @cart_products << { product: product, quantity: quantity, subtotal: subtotal }
-      end
+      next unless product
+
+      subtotal = product.price * quantity
+      @total += subtotal
+      @cart_products << { product: product, quantity: quantity, subtotal: subtotal }
     end
   end
 
@@ -31,12 +31,12 @@ class CartController < ApplicationController
     else
       session[:cart][product_id] = quantity
     end
-    redirect_to cart_path, notice: "Cart updated!"
+    redirect_to cart_path, notice: 'Cart updated!'
   end
 
   def remove
     session[:cart] ||= {}
     session[:cart].delete(params[:product_id].to_s)
-    redirect_to cart_path, notice: "Item removed from cart!"
+    redirect_to cart_path, notice: 'Item removed from cart!'
   end
 end

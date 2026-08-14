@@ -4,7 +4,10 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   resources :products, only: [:index, :show]
-  resource :checkout, only: [:show, :create]
+  resource :checkout, only: [:show, :create] do
+    get :success, on: :collection
+    get :cancel, on: :collection
+  end
   resources :orders, only: [:show, :index]
 
   get "/cart", to: "cart#show", as: :cart

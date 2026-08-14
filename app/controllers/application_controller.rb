@@ -9,20 +9,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_sign_up_path_for(resource)
+  def after_sign_up_path_for(_resource)
     root_path
   end
 
   helper_method :current_customer
 
   def current_customer
-    @current_customer ||= User.find_by(id: session["warden.user.user.key"]&.first&.first)
+    @current_customer ||= User.find_by(id: session['warden.user.user.key']&.first&.first)
   end
 
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:province_id, :address, :city, :phone])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:province_id, :address, :city, :phone])
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[province_id address city phone])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[province_id address city phone])
   end
 end

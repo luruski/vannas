@@ -17,11 +17,11 @@ class Order < ApplicationRecord
     total + tax_total
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "gst_amount", "hst_amount", "id", "notes", "pickup_date", "pst_amount", "status", "updated_at", "user_id"]
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[created_at gst_amount hst_amount id notes pickup_date pst_amount status updated_at user_id]
   end
 
-  def self.ransackable_associations(auth_object = nil)
-    ["order_items", "products", "user"]
+  def self.ransackable_associations(_auth_object = nil)
+    %w[order_items products user]
   end
 end

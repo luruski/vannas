@@ -1,6 +1,6 @@
 class CheckoutsController < ApplicationController
   before_action :require_login
-  before_action :ensure_cart_not_empty
+  before_action :ensure_cart_not_empty, only: %i[show create]
 
   def show
     @cart = session[:cart] || {}
@@ -31,7 +31,7 @@ class CheckoutsController < ApplicationController
 
     order = Order.new(
       user: @logged_in_user,
-      status: "pending",
+      status: 'pending',
       pickup_date: params[:pickup_date],
       notes: params[:notes],
       gst_amount: @gst_amount,
@@ -47,25 +47,68 @@ class CheckoutsController < ApplicationController
           price_at_purchase: item[:product].price
         )
       end
-      session[:cart] = {}
-      redirect_to order_path(order), notice: "Order placed successfully!"
+
+      session[:pending_order_id] = order.id
+
+      stripe_session = Stripe::Checkout::Session.create(
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: 'cad',
+            product_data: {
+              name: "Vannas Bakery Order ##{order.id}"
+            },
+            unit_amount: (@grand_total * 100).to_i
+          },
+          quantity: 1
+        }],
+        mode: 'payment',
+        success_url: "#{success_checkout_url}?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url: cancel_checkout_url
+      )
+
+      redirect_to stripe_session.url, allow_other_host: true
     else
       render :show
     end
   end
 
-  private
+  def success
+    order = Order.find_by(id: session[:pending_order_id])
 
-  def require_login
-    unless current_customer
-      redirect_to new_user_session_path, alert: "Please sign in to checkout."
+    if order && params[:session_id].present?
+      stripe_session = Stripe::Checkout::Session.retrieve(params[:session_id])
+      order.update(
+        status: 'paid',
+        stripe_payment_id: stripe_session.payment_intent
+      )
+      session.delete(:pending_order_id)
+      session[:cart] = {}
+      redirect_to order_path(order), notice: 'Payment successful! Your order has been placed.'
+    else
+      redirect_to root_path, alert: 'Something went wrong with your payment.'
     end
   end
 
+  def cancel
+    order = Order.find_by(id: session[:pending_order_id])
+    order&.update(status: 'cancelled')
+    session.delete(:pending_order_id)
+    redirect_to cart_path, alert: 'Payment was cancelled. Your cart is still saved.'
+  end
+
+  private
+
+  def require_login
+    return if current_customer
+
+    redirect_to new_user_session_path, alert: 'Please sign in to checkout.'
+  end
+
   def ensure_cart_not_empty
-    if session[:cart].blank?
-      redirect_to root_path, alert: "Your cart is empty."
-    end
+    return unless session[:cart].blank?
+
+    redirect_to root_path, alert: 'Your cart is empty.'
   end
 
   def build_cart_products(cart)

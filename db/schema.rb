@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_14_122916) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_14_130127) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -91,6 +91,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_14_122916) do
     t.decimal "hst_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "stripe_payment_id"
   end
 
   create_table "pages", force: :cascade do |t|

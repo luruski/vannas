@@ -12,8 +12,8 @@ class OrdersController < ApplicationController
   private
 
   def require_login
-    unless current_customer
-      redirect_to new_user_session_path, alert: "Please sign in to view orders."
-    end
+    return if current_customer
+
+    redirect_to new_user_session_path, alert: 'Please sign in to view orders.'
   end
 end

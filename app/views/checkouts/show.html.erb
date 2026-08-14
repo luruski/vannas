@@ -3,7 +3,7 @@
     <div class="col-md-8">
       <h1 class="mb-4">Checkout</h1>
 
-      <%= form_with url: checkout_path, method: :post, local: true do |f| %>
+    <%= form_with url: checkout_path, method: :post, local: true, data: { turbo: false } do |f| %>
         <div class="card shadow-sm mb-4">
           <div class="card-header bg-dark text-white">
             <h5 class="mb-0">Order Summary</h5>
