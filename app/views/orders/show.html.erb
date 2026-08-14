@@ -11,7 +11,16 @@
           <h5 class="mb-0">Order #<%= @order.id %></h5>
         </div>
         <div class="card-body">
-          <p><strong>Status:</strong> <span class="badge bg-warning"><%= @order.status.capitalize %></span></p>
+          <p>
+            <strong>Status:</strong>
+            <% if @order.status == "pending" %>
+              <span class="badge bg-warning">Pending</span>
+            <% elsif @order.status == "paid" %>
+              <span class="badge bg-success">Paid</span>
+            <% elsif @order.status == "shipped" %>
+              <span class="badge bg-primary">Shipped</span>
+            <% end %>
+          </p>
           <% if @order.pickup_date %>
             <p><strong>Pickup Date:</strong> <%= @order.pickup_date.strftime("%B %d, %Y") %></p>
           <% end %>

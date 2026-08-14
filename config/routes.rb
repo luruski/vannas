@@ -12,5 +12,7 @@ Rails.application.routes.draw do
   patch "/cart/update/:product_id", to: "cart#update", as: :update_cart
   delete "/cart/remove/:product_id", to: "cart#remove", as: :remove_from_cart
 
+  get "/pages/:slug", to: "pages#show", as: :page
+
   root to: "products#index"
 end

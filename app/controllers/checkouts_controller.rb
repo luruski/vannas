@@ -18,7 +18,12 @@ class CheckoutsController < ApplicationController
     @logged_in_user = current_customer
 
     if params[:province_id].present?
-      @logged_in_user.update(province_id: params[:province_id])
+      @logged_in_user.update(
+        province_id: params[:province_id],
+        phone: params[:phone],
+        address: params[:address],
+        city: params[:city]
+      )
     end
 
     @province = @logged_in_user&.province_id ? Province.find_by(id: @logged_in_user.province_id) : nil

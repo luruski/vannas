@@ -62,24 +62,46 @@
 
         <div class="card shadow-sm mb-4">
           <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Contact and Address</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Phone Number</label>
+              <%= f.phone_field :phone, class: "form-control",
+                  placeholder: "e.g. 204-555-1234", required: true,
+                  value: @logged_in_user&.phone %>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Street Address</label>
+              <%= f.text_field :address, class: "form-control",
+                  placeholder: "e.g. 123 Main Street", required: true,
+                  value: @logged_in_user&.address %>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">City</label>
+                <%= f.text_field :city, class: "form-control",
+                    placeholder: "e.g. Winnipeg", required: true,
+                    value: @logged_in_user&.city %>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Province</label>
+                <%= f.select :province_id,
+                    options_from_collection_for_select(Province.all, :id, :name, @logged_in_user&.province_id),
+                    { include_blank: "Select your province" },
+                    { class: "form-select", required: true } %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-dark text-white">
             <h5 class="mb-0">Order Details</h5>
           </div>
           <div class="card-body">
-            <% if @logged_in_user&.province_id.blank? %>
-              <div class="mb-3">
-                <label class="form-label fw-bold">Your Province</label>
-                <p class="text-muted small">We need your province to calculate taxes correctly.</p>
-                <%= f.select :province_id,
-                    options_from_collection_for_select(Province.all, :id, :name),
-                    { include_blank: "Select your province" },
-                    { class: "form-select" } %>
-              </div>
-            <% else %>
-              <p class="mb-3">
-                <strong>Province:</strong> <%= @province ? @province.name : "Not set" %>
-              </p>
-            <% end %>
-
             <div class="mb-3">
               <label class="form-label fw-bold">Requested Pickup Date</label>
               <%= f.date_field :pickup_date, class: "form-control", min: Date.today %>

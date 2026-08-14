@@ -1,5 +1,5 @@
 ActiveAdmin.register Product do
-  permit_params :name, :description, :price, :category_id, :image, :available
+  permit_params :name, :description, :price, :category_id, :image, :available, :on_sale, :sale_price, tag_ids: []
 
   index do
     selectable_column
@@ -9,7 +9,16 @@ ActiveAdmin.register Product do
     column :price do |product|
       number_to_currency(product.price)
     end
+    column :on_sale
     column :available
+    column :tags do |product|
+      product.tags.map(&:name).join(", ")
+    end
+    column :image do |product|
+      if product.image.attached?
+        image_tag product.image.variant(:thumb), height: 50
+      end
+    end
     actions
   end
 
@@ -17,14 +26,20 @@ ActiveAdmin.register Product do
   filter :category
   filter :available
   filter :price
+  filter :on_sale
+  filter :tags
 
   form do |f|
     f.inputs "Product Details" do
       f.input :name
       f.input :description
-      f.input :price
+      f.input :price, min: 0.01
       f.input :category
       f.input :available
+      f.input :on_sale
+      f.input :sale_price, min: 0
+      f.input :tags, as: :check_boxes, collection: Tag.order(:name)
+      f.input :image, as: :file, hint: f.object.image.attached? ? image_tag(f.object.image.variant(:thumb), height: 100) : "No image uploaded"
     end
     f.actions
   end
@@ -38,6 +53,18 @@ ActiveAdmin.register Product do
       end
       row :category
       row :available
+      row :on_sale
+      row :sale_price do |product|
+        number_to_currency(product.sale_price) if product.sale_price
+      end
+      row :tags do |product|
+        product.tags.map(&:name).join(", ")
+      end
+      row :image do |product|
+        if product.image.attached?
+          image_tag product.image.variant(:medium)
+        end
+      end
       row :created_at
     end
   end
