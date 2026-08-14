@@ -1,39 +1,13 @@
+require "csv"
+require "faker"
+
 # Clear existing data
 puts "Clearing existing data..."
+OrderItem.destroy_all if defined?(OrderItem)
+Order.destroy_all if defined?(Order)
 Product.destroy_all
 Category.destroy_all
 Province.destroy_all
-
-# Categories
-puts "Creating categories..."
-cakes = Category.create!(
-  name: "Cakes",
-  description: "Custom celebration cakes for every occasion, available in a variety of sizes and flavours."
-)
-
-cupcakes = Category.create!(
-  name: "Cupcakes",
-  description: "Delicious cupcakes available by the dozen in rotating seasonal flavours."
-)
-
-# Products
-puts "Creating products..."
-
-# Cakes
-Product.create!(name: "Classic Vanilla Birthday Cake", description: "A light and fluffy vanilla sponge cake layered with buttercream frosting and rainbow sprinkles. Perfect for birthdays.", price: 55.00, category: cakes, available: true)
-Product.create!(name: "Dark Chocolate Fudge Cake", description: "Rich dark chocolate cake layers filled with chocolate ganache and finished with a smooth fudge frosting.", price: 60.00, category: cakes, available: true)
-Product.create!(name: "Strawberry Lemonade Cake", description: "Bright and zesty lemon sponge filled with fresh strawberry jam and lemon buttercream. A summer favourite.", price: 58.00, category: cakes, available: true)
-Product.create!(name: "Salted Caramel Cake", description: "Moist brown sugar cake layers filled with house-made salted caramel sauce and whipped caramel buttercream.", price: 62.00, category: cakes, available: true)
-Product.create!(name: "Tiered Wedding Cake", description: "Elegant three-tier white cake decorated with fresh florals and ribbon. Feeds up to 80 guests. Custom orders welcome.", price: 350.00, category: cakes, available: true)
-Product.create!(name: "Carrot Cake", description: "A warmly spiced carrot cake packed with walnuts and raisins, finished with thick cream cheese frosting.", price: 55.00, category: cakes, available: true)
-Product.create!(name: "Red Velvet Celebration Cake", description: "Classic red velvet layers with a hint of cocoa, filled and frosted with tangy cream cheese icing.", price: 60.00, category: cakes, available: true)
-
-# Cupcakes
-Product.create!(name: "Classic Vanilla Cupcakes", description: "Soft vanilla cupcakes topped with a swirl of vanilla buttercream and a dusting of sprinkles. Sold by the dozen.", price: 36.00, category: cupcakes, available: true)
-Product.create!(name: "Chocolate Lovers Cupcakes", description: "Double chocolate cupcakes with a chocolate ganache centre and dark chocolate buttercream. Sold by the dozen.", price: 38.00, category: cupcakes, available: true)
-Product.create!(name: "Lemon Raspberry Cupcakes", description: "Tangy lemon cupcakes with a fresh raspberry compote swirled into the buttercream. Sold by the dozen.", price: 40.00, category: cupcakes, available: true)
-Product.create!(name: "Maple Bacon Cupcakes", description: "A Winnipeg favourite. Fluffy maple cupcakes topped with maple buttercream and a crispy candied bacon crumble.", price: 42.00, category: cupcakes, available: true)
-Product.create!(name: "Mini Cupcake Party Box", description: "An assortment of 24 mini cupcakes in a mix of our most popular flavours. Perfect for events and parties.", price: 45.00, category: cupcakes, available: true)
 
 # Provinces
 puts "Creating provinces..."
@@ -51,4 +25,99 @@ Province.create!(name: "Northwest Territories", abbreviation: "NT", gst_rate: 0.
 Province.create!(name: "Nunavut", abbreviation: "NU", gst_rate: 0.05, pst_rate: 0.00, hst_rate: 0.00)
 Province.create!(name: "Yukon", abbreviation: "YT", gst_rate: 0.05, pst_rate: 0.00, hst_rate: 0.00)
 
-puts "Done! Created #{Category.count} categories, #{Product.count} products, #{Province.count} provinces."
+# Categories (now 4 instead of 2)
+puts "Creating categories..."
+Category.create!(name: "Cakes", description: "Custom celebration cakes for every occasion, available in a variety of sizes and flavours.")
+Category.create!(name: "Cupcakes", description: "Delicious cupcakes available by the dozen in rotating seasonal flavours.")
+Category.create!(name: "Cookies", description: "Fresh baked cookies made daily with real butter and quality ingredients.")
+Category.create!(name: "Pastries", description: "Flaky croissants, danishes, and morning pastries baked fresh every morning.")
+
+# Load 20 hand-written products from CSV (feature 1.8)
+puts "Loading products from db/products.csv..."
+CSV.foreach(Rails.root.join("db", "products.csv"), headers: true) do |row|
+  category = Category.find_by(name: row["category"])
+  Product.create!(
+    name: row["name"],
+    description: row["description"],
+    price: row["price"].to_f,
+    available: true,
+    on_sale: row["on_sale"] == "true",
+    sale_price: row["sale_price"].presence&.to_f,
+    category: category
+  )
+end
+
+# Generate more products with Faker to reach 100+ (feature 1.6)
+puts "Generating additional products with Faker to reach 100..."
+flavours = [
+  "Vanilla Bean", "Dark Chocolate", "Salted Caramel", "Lemon Curd",
+  "Raspberry", "Maple", "Espresso", "Pistachio", "Coconut", "Blueberry",
+  "Cinnamon", "Hazelnut", "Orange Blossom", "Brown Sugar", "Matcha",
+  "Lavender", "Pumpkin Spice", "Honey", "Chai", "Peanut Butter"
+]
+
+forms = {
+  "Cakes" => ["Layer Cake", "Bundt Cake", "Cheesecake", "Sheet Cake", "Loaf Cake"],
+  "Cupcakes" => ["Cupcake", "Mini Cupcake", "Filled Cupcake"],
+  "Cookies" => ["Cookie", "Sandwich Cookie", "Shortbread", "Biscotti"],
+  "Pastries" => ["Danish", "Scone", "Tart", "Turnover", "Croissant"]
+}
+
+while Product.count < 100
+  category = Category.all.sample
+  name = "#{flavours.sample} #{forms[category.name].sample}"
+  next if Product.exists?(name: name)
+
+  base_price = category.name == "Cakes" ? rand(28.0..52.0) : rand(2.5..7.5)
+  is_on_sale = [true, false, false, false].sample
+
+  Product.create!(
+    name: name,
+    description: Faker::Food.description,
+    price: base_price.round(2),
+    available: true,
+    on_sale: is_on_sale,
+    sale_price: is_on_sale ? (base_price * 0.8).round(2) : nil,
+    category: category
+  )
+end
+
+# Stagger timestamps so "new" and "recently updated" filters have data (feature 2.4)
+puts "Staggering timestamps for filter demo data..."
+all_products = Product.order(:id).to_a
+
+# First 10 products: created in last 2 days (these are "new")
+all_products[0, 10].each do |product|
+  stamp = rand(1..2).days.ago
+  product.update_columns(created_at: stamp, updated_at: stamp)
+end
+
+# Next 10 products: created long ago but updated recently (these are "recently updated" but not "new")
+all_products[10, 10].each do |product|
+  product.update_columns(created_at: 45.days.ago, updated_at: rand(1..2).days.ago)
+end
+
+# Remaining products: old created and old updated
+all_products[20..].each do |product|
+  stamp = rand(30..90).days.ago
+  product.update_columns(created_at: stamp, updated_at: stamp)
+end
+
+# Re-create the test customer account
+puts "Creating test customer..."
+if defined?(User)
+  User.find_or_create_by!(email: "lou@vannas.com") do |user|
+    user.password = "password123"
+    user.password_confirmation = "password123"
+    user.province = Province.find_by(abbreviation: "MB")
+  end
+end
+
+puts "Done! #{Product.count} products across #{Category.count} categories, #{Province.count} provinces."
+puts "On sale: #{Product.where(on_sale: true).count}"
+
+puts "Creating tags..."
+["Bestseller", "Seasonal", "Nut-Free", "Vegan", "Gluten-Free", "Party Favourite"].each do |name|
+  Tag.find_or_create_by(name: name)
+end
+puts "Tags: #{Tag.pluck(:name).join(', ')}"

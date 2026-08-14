@@ -1,0 +1,21 @@
+name,description,price,category,on_sale,sale_price
+Classic Vanilla Birthday Cake,Two layers of vanilla sponge filled with vanilla buttercream and finished with rainbow sprinkles.,38.99,Cakes,false,
+Belgian Chocolate Fudge Cake,Dark chocolate sponge layered with fudge ganache and topped with chocolate curls.,42.99,Cakes,true,34.99
+Lemon Poppyseed Loaf Cake,A bright lemon loaf studded with poppyseeds and finished with a lemon glaze.,26.99,Cakes,false,
+Red Velvet Layer Cake,Three layers of red velvet with a tangy cream cheese frosting between each layer.,44.99,Cakes,false,
+Saskatoon Berry Cheesecake,Baked vanilla cheesecake topped with a prairie saskatoon berry compote.,46.99,Cakes,true,39.99
+Salted Caramel Cupcake,Vanilla cupcake filled with salted caramel and topped with caramel buttercream.,4.50,Cupcakes,false,
+Chocolate Peanut Butter Cupcake,Chocolate cupcake with a peanut butter frosting and a chocolate drizzle.,4.50,Cupcakes,false,
+Strawberry Shortcake Cupcake,Vanilla cupcake with fresh strawberry filling and whipped mascarpone frosting.,4.75,Cupcakes,true,3.75
+London Fog Cupcake,Earl Grey infused cupcake topped with a vanilla bean buttercream.,4.75,Cupcakes,false,
+Maple Pecan Cupcake,Brown sugar cupcake with maple frosting and candied pecan pieces.,4.75,Cupcakes,false,
+Brown Butter Chocolate Chip Cookie,A thick chewy cookie made with brown butter and dark chocolate chunks.,3.25,Cookies,false,
+Double Chocolate Sea Salt Cookie,Cocoa cookie dough with chocolate chunks and a finish of flaked sea salt.,3.25,Cookies,true,2.50
+Oatmeal Cranberry Cookie,Rolled oats and dried cranberries in a soft brown sugar cookie.,3.00,Cookies,false,
+Shortbread Rounds,Buttery Scottish style shortbread cut into rounds and baked until pale gold.,2.75,Cookies,false,
+Ginger Molasses Cookie,A soft spiced cookie rolled in coarse sugar before baking.,3.00,Cookies,false,
+Butter Croissant,Laminated dough folded over three days and baked until shatteringly crisp.,4.25,Pastries,false,
+Almond Croissant,Day old croissant filled with almond cream and topped with sliced almonds.,5.25,Pastries,true,4.25
+Cinnamon Morning Bun,Croissant dough rolled with cinnamon sugar and baked in a muffin tin.,4.75,Pastries,false,
+Raspberry Danish,Puff pastry with vanilla pastry cream and fresh raspberries.,5.00,Pastries,false,
+Chocolate Hazelnut Twist,Laminated dough twisted with chocolate hazelnut spread and baked until dark.,5.00,Pastries,false,
