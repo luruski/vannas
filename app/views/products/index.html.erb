@@ -7,6 +7,13 @@
   <%= render "search_form" %>
   <%= render "category_nav" %>
 
+  <div class="d-flex justify-content-center gap-2 mb-4">
+    <%= link_to "All Products", root_path, class: "btn btn-sm #{params[:filter].blank? ? 'btn-dark' : 'btn-outline-dark'}" %>
+    <%= link_to "On Sale", root_path(filter: "on_sale"), class: "btn btn-sm #{params[:filter] == 'on_sale' ? 'btn-danger' : 'btn-outline-danger'}" %>
+    <%= link_to "New", root_path(filter: "new"), class: "btn btn-sm #{params[:filter] == 'new' ? 'btn-success' : 'btn-outline-success'}" %>
+    <%= link_to "Recently Updated", root_path(filter: "recently_updated"), class: "btn btn-sm #{params[:filter] == 'recently_updated' ? 'btn-info' : 'btn-outline-info'}" %>
+  </div>
+
   <% if @products.empty? %>
     <div class="text-center py-5">
       <h4 class="text-muted">No products found matching your search.</h4>
@@ -19,4 +26,8 @@
       <% end %>
     </div>
   <% end %>
+
+  <div class="d-flex justify-content-center mt-4">
+    <%= paginate @products %>
+  </div>
 </div>
