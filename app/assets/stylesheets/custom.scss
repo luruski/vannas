@@ -1,0 +1,128 @@
+// SCSS Variables (requirement: variables)
+$brand-pink: #e91e63;
+$brand-dark: #2c1810;
+$brand-light: #fdf2f0;
+$base-font-size: 16px;
+$card-radius: 8px;
+$spacing: 16px;
+
+// SCSS Operators (requirement: operators)
+$spacing-sm: $spacing / 2;
+$spacing-lg: $spacing * 2;
+$spacing-xl: $spacing * 3;
+$heading-size: $base-font-size * 2;
+
+// Placeholder for inheritance (requirement: inheritance with @extend)
+%badge-base {
+  display: inline-block;
+  padding: $spacing-sm $spacing;
+  border-radius: $card-radius / 2;
+  font-size: $base-font-size - 2;
+  font-weight: 600;
+}
+
+.badge-sale {
+  @extend %badge-base;
+  background-color: $brand-pink;
+  color: white;
+}
+
+.badge-new {
+  @extend %badge-base;
+  background-color: #28a745;
+  color: white;
+}
+
+// SCSS Nesting (requirement: nesting)
+.product-card {
+  border-radius: $card-radius;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 15px rgba($brand-dark, 0.15);
+  }
+
+  .card-img-top {
+    height: $base-font-size * 12;
+    object-fit: cover;
+    border-radius: $card-radius $card-radius 0 0;
+  }
+
+  .card-body {
+    padding: $spacing-lg;
+
+    .card-title {
+      color: $brand-dark;
+      font-size: $base-font-size + 2;
+    }
+
+    .card-text {
+      font-size: $base-font-size - 1;
+    }
+  }
+
+  .card-footer {
+    background-color: $brand-light;
+    padding: $spacing;
+    border-top: 1px solid darken($brand-light, 5%);
+  }
+}
+
+// Page styling with nesting
+.bakery-page {
+  background-color: white;
+  padding: $spacing-xl 0;
+
+  h1 {
+    color: $brand-dark;
+    font-size: $heading-size;
+    margin-bottom: $spacing-lg;
+  }
+
+  p {
+    font-size: $base-font-size + 1;
+    line-height: 1.7;
+  }
+}
+
+// Sale price styling with nesting and operators
+.price-display {
+  .original-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: $base-font-size;
+  }
+
+  .sale-price {
+    color: $brand-pink;
+    font-weight: bold;
+    font-size: $base-font-size + 4;
+    margin-left: $spacing-sm;
+  }
+}
+
+// Filter buttons with nesting
+.product-filters {
+  margin-bottom: $spacing-lg;
+  display: flex;
+  gap: $spacing-sm;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .filter-btn {
+    border-radius: $card-radius * 2;
+    padding: $spacing-sm $spacing-lg;
+    font-size: $base-font-size - 1;
+
+    &.active {
+      background-color: $brand-dark;
+      color: white;
+    }
+
+    &:hover {
+      background-color: $brand-pink;
+      color: white;
+    }
+  }
+}
